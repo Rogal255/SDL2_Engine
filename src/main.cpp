@@ -2,6 +2,6 @@
 
 int main([[maybe_unused]] int arc, [[maybe_unused]] char* argv[]) {
     Game game;
-    game.run();
+    game.mainLoop();
     return 0;
 }

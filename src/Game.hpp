@@ -11,7 +11,7 @@ public:
     Game& operator=(const Game&) = delete;
     Game& operator=(Game&&) = delete;
 
-    void run(); // Performance critical
+    void mainLoop(); // Performance critical
 
 private:
     void handleEvents(); // Performance critical

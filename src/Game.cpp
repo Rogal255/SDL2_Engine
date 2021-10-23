@@ -2,7 +2,6 @@
 #include "SDL.h"
 #include <memory>
 #include <stdexcept>
-#include <string>
 
 Game::Game() {
     if (SDL_Init(SDL_INIT_EVERYTHING)) {
@@ -41,14 +40,15 @@ Game::Game() {
 
 Game::~Game() { SDL_Quit(); }
 
-void Game::run() {
+void Game::mainLoop() {
     const uint16_t FPS {60};
     const uint16_t maxFrameTime {1000 / FPS};
-    uint32_t currentFrameStart {SDL_GetTicks()};
+    uint32_t currentFrameStart;
     uint32_t currentFrameTime;
 
     // Performance critical starts here
     while (isRunning_) {
+        currentFrameStart = SDL_GetTicks();
         handleEvents();
         update();
         render();
