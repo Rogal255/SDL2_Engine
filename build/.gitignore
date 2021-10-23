@@ -1,0 +1,5 @@
+*.dll
+LICENSE*
+*exe
+*.txt
+SDL2_Game_1*
