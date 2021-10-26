@@ -1,5 +1,6 @@
 #include "Game.hpp"
 #include "SDL.h"
+#include <iostream>
 #include <memory>
 #include <stdexcept>
 
@@ -36,6 +37,8 @@ Game::Game() {
         SDL_LogCritical(SDL_LOG_CATEGORY_RENDER, "Game::Game() - SDL_SetRenderDrawColor - %s\n", SDL_GetError());
         throw std::runtime_error("Game::Game() - SDL_SetRenderDrawColor has failed");
     }
+
+    testECS();
 }
 
 Game::~Game() { SDL_Quit(); }
@@ -84,4 +87,15 @@ void Game::render() {
     SDL_RenderClear(renderer_.get());
     // TODO: render everything
     SDL_RenderPresent(renderer_.get());
+}
+
+void Game::testECS() {
+    size_t firstEntity = entityManager.addEntity();
+    size_t secondEntity = entityManager.addEntity();
+    std::cout << "First entity id: " << firstEntity << '\n';
+    std::cout << "Second entity id: " << secondEntity << '\n';
+    entityManager.addComponent<TransformComponent>(firstEntity);
+    auto& firstComponent = entityManager.getComponent<TransformComponent>(firstEntity);
+    firstComponent.posX = 10.f;
+    std::cout << "First component: " << entityManager.getComponent<TransformComponent>(firstEntity).posX << '\n';
 }
