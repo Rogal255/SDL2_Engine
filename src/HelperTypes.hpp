@@ -1,4 +1,5 @@
 #pragma once
+#include <stdio.h>
 
 enum ComponentEnum { Transform, Sprite, Size };
 
