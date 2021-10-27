@@ -1,4 +1,5 @@
 #include "Game.hpp"
+#include "HelperTypes.hpp"
 #include "SDL.h"
 #include <iostream>
 #include <memory>
@@ -90,10 +91,10 @@ void Game::render() {
 }
 
 void Game::testECS() {
-    size_t firstEntity = entityManager.addEntity();
-    size_t secondEntity = entityManager.addEntity();
-    std::cout << "First entity id: " << firstEntity << '\n';
-    std::cout << "Second entity id: " << secondEntity << '\n';
+    EntityID firstEntity = entityManager.addEntity();
+    EntityID secondEntity = entityManager.addEntity();
+    std::cout << "First entity id: " << firstEntity.value << '\n';
+    std::cout << "Second entity id: " << secondEntity.value << '\n';
     entityManager.addComponent<TransformComponent>(firstEntity);
     auto& firstComponent = entityManager.getComponent<TransformComponent>(firstEntity);
     firstComponent.posX = 10.f;

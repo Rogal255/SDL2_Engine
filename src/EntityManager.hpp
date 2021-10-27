@@ -2,36 +2,36 @@
 #include "Component.hpp"
 #include "ComponentManager.hpp"
 #include "Entity.hpp"
+#include "HelperTypes.hpp"
 #include <map>
 #include <memory>
 
 class EntityManager {
 public:
-    size_t addEntity() noexcept {
-        auto id = generateNextEntityID();
-        data_[id] = Entity(id);
-        return id;
+    EntityID addEntity() {
+        auto entityID = generateNextEntityID();
+        data_.insert({entityID, Entity(entityID)});
+        return entityID;
     }
 
     template <typename T>
-    T& addComponent(size_t tEntityIndex) {
-        size_t componentIndex = ComponentManager<T>::addComponent();
+    T& addComponent(const EntityID& tEntityID) {
+        size_t componentIndex = ComponentManager<T>::addComponent(tEntityID);
         T& component = ComponentManager<T>::getComponent(componentIndex);
-        component.entityID = tEntityIndex;
-        data_[tEntityIndex].sparseArray[T::typeID] = componentIndex;
+        data_.find(tEntityID)->second.sparseArray[T::typeID] = componentIndex;
         return component;
     }
 
     template <typename T>
-    T& getComponent(size_t tEntityIndex) {
-        return ComponentManager<T>::getComponent(data_[tEntityIndex].sparseArray[T::typeID]);
+    T& getComponent(const EntityID& tEntityID) {
+        return ComponentManager<T>::getComponent(data_.find(tEntityID)->second.sparseArray[T::typeID]);
     }
 
 private:
-    std::map<size_t, Entity> data_;
+    std::map<EntityID, Entity> data_;
 
-    static size_t generateNextEntityID() {
+    static EntityID generateNextEntityID() {
         static size_t lastAssigned {1u};
-        return lastAssigned++;
+        return EntityID(lastAssigned++);
     }
 };

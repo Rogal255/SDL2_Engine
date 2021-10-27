@@ -1,6 +1,7 @@
 #pragma once
-#include <array>
 #include "Component.hpp"
+#include "HelperTypes.hpp"
+#include <array>
 
 class EntityManager;
 
@@ -8,10 +9,9 @@ class Entity {
     friend EntityManager;
 
 public:
-    Entity() = default;
-    size_t ID;
-    std::array<size_t, ComponentID::Size> sparseArray {0};
+    EntityID entityID;
+    std::array<size_t, ComponentEnum::Size> sparseArray {0};
 
 private:
-    explicit Entity(size_t tID) : ID {tID} { }
+    explicit constexpr Entity(const EntityID& tEntityID) : entityID {tEntityID} { }
 };

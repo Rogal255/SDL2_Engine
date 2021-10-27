@@ -1,17 +1,14 @@
 #pragma once
-
-enum ComponentID {
-    Transform,
-    Sprite,
-    Size
-};
+#include "HelperTypes.hpp"
 
 struct Component {
-    size_t entityID {0};
+    explicit constexpr Component(const EntityID& tEntityID) : entityID {tEntityID} { }
+    EntityID entityID;
 };
 
-struct TransformComponent : public Component{
-    constexpr static ComponentID typeID {ComponentID::Transform};
+struct TransformComponent : public Component {
+    explicit constexpr TransformComponent(const EntityID& tEntityID) : Component(tEntityID) { }
+    constexpr static ComponentEnum typeID {ComponentEnum::Transform};
     float posX {0.f};
     float posY {0.f};
 };
