@@ -10,7 +10,7 @@ class Entity {
 
 public:
     EntityID entityID;
-    std::array<size_t, ComponentEnum::Size> sparseArray {0};
+    std::array<ComponentID, ComponentEnum::Size> sparseArray {ComponentID(0)};
 
 private:
     explicit constexpr Entity(const EntityID& tEntityID) : entityID {tEntityID} { }

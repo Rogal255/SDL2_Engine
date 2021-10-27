@@ -91,12 +91,20 @@ void Game::render() {
 }
 
 void Game::testECS() {
+    std::cout << "Entity: " << sizeof(Entity) << '\n';
+    std::cout << "EntityID: " << sizeof(EntityID) << '\n';
+    std::cout << "TransformComponent: " << sizeof(TransformComponent) << '\n';
     EntityID firstEntity = entityManager.addEntity();
     EntityID secondEntity = entityManager.addEntity();
     std::cout << "First entity id: " << firstEntity.value << '\n';
     std::cout << "Second entity id: " << secondEntity.value << '\n';
     entityManager.addComponent<TransformComponent>(firstEntity);
+    entityManager.addComponent<TransformComponent>(secondEntity);
     auto& firstComponent = entityManager.getComponent<TransformComponent>(firstEntity);
     firstComponent.posX = 10.f;
-    std::cout << "First component: " << entityManager.getComponent<TransformComponent>(firstEntity).posX << '\n';
+    std::cout << "First component posX: " << entityManager.getComponent<TransformComponent>(firstEntity).posX << '\n';
+    std::cout << "First component ID: " << entityManager.getComponentID<TransformComponent>(firstEntity).value << '\n';
+    std::cout << "Second component posX: " << entityManager.getComponent<TransformComponent>(secondEntity).posX << '\n';
+    std::cout << "Second component ID: " << entityManager.getComponentID<TransformComponent>(secondEntity).value
+              << '\n';
 }

@@ -16,15 +16,20 @@ public:
 
     template <typename T>
     T& addComponent(const EntityID& tEntityID) {
-        size_t componentIndex = ComponentManager<T>::addComponent(tEntityID);
-        T& component = ComponentManager<T>::getComponent(componentIndex);
-        data_.find(tEntityID)->second.sparseArray[T::typeID] = componentIndex;
+        ComponentID componentID = ComponentManager<T>::addComponent(tEntityID);
+        T& component = ComponentManager<T>::getComponent(componentID);
+        data_.find(tEntityID)->second.sparseArray[T::typeID] = componentID;
         return component;
     }
 
     template <typename T>
     T& getComponent(const EntityID& tEntityID) {
-        return ComponentManager<T>::getComponent(data_.find(tEntityID)->second.sparseArray[T::typeID]);
+        return ComponentManager<T>::getComponent(ComponentID(data_.find(tEntityID)->second.sparseArray[T::typeID]));
+    }
+
+    template <typename T>
+    ComponentID getComponentID(const EntityID& tEntityID) {
+        return ComponentID(data_.find(tEntityID)->second.sparseArray[T::typeID]);
     }
 
 private:
