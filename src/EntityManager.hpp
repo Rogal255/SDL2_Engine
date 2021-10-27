@@ -5,7 +5,7 @@
 #include "HelperTypes.hpp"
 #include <map>
 #include <memory>
-#include <stdio.h>
+#include <cstdio>
 
 class EntityManager {
 public:
