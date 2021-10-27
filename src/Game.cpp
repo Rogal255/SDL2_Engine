@@ -93,6 +93,7 @@ void Game::render() {
 void Game::testECS() {
     std::cout << "Entity: " << sizeof(Entity) << '\n';
     std::cout << "EntityID: " << sizeof(EntityID) << '\n';
+    std::cout << "ComponentID: " << sizeof(ComponentID) << '\n';
     std::cout << "TransformComponent: " << sizeof(TransformComponent) << '\n';
     EntityID firstEntity = entityManager.addEntity();
     EntityID secondEntity = entityManager.addEntity();

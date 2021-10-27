@@ -16,5 +16,5 @@ public:
     static T& getComponent(const ComponentID& componentID) { return data_[componentID.value]; }
 
 private:
-    static inline std::vector<T> data_ {};
+    static inline std::vector<T> data_ {T(EntityID(0))};
 };
