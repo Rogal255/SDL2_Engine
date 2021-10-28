@@ -16,8 +16,6 @@ public:
 
     void mainLoop(); // Performance critical
 
-    EntityManager entityManager;
-
 private:
     void handleEvents(); // Performance critical
     void update();       // Performance critical

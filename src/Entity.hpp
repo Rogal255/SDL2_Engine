@@ -13,5 +13,5 @@ public:
     std::array<ComponentID, ComponentEnum::Size> sparseArray {ComponentID(0)};
 
 private:
-    explicit constexpr Entity(const EntityID& tEntityID) : entityID {tEntityID} { }
+    explicit constexpr Entity(const EntityID& tEntityID) noexcept : entityID {tEntityID} { }
 };

@@ -95,17 +95,17 @@ void Game::testECS() {
     std::cout << "EntityID: " << sizeof(EntityID) << '\n';
     std::cout << "ComponentID: " << sizeof(ComponentID) << '\n';
     std::cout << "TransformComponent: " << sizeof(TransformComponent) << '\n';
-    EntityID firstEntity = entityManager.addEntity();
-    EntityID secondEntity = entityManager.addEntity();
+    EntityID firstEntity = EntityManager::addEntity();
+    EntityID secondEntity = EntityManager::addEntity();
     std::cout << "First entity id: " << firstEntity.value << '\n';
     std::cout << "Second entity id: " << secondEntity.value << '\n';
-    entityManager.addComponent<TransformComponent>(firstEntity);
-    entityManager.addComponent<TransformComponent>(secondEntity);
-    auto& firstComponent = entityManager.getComponent<TransformComponent>(firstEntity);
+    EntityManager::addComponent<TransformComponent>(firstEntity);
+    EntityManager::addComponent<TransformComponent>(secondEntity);
+    auto& firstComponent = EntityManager::getComponent<TransformComponent>(firstEntity);
     firstComponent.posX = 10.f;
-    std::cout << "First component posX: " << entityManager.getComponent<TransformComponent>(firstEntity).posX << '\n';
-    std::cout << "First component ID: " << entityManager.getComponentID<TransformComponent>(firstEntity).value << '\n';
-    std::cout << "Second component posX: " << entityManager.getComponent<TransformComponent>(secondEntity).posX << '\n';
-    std::cout << "Second component ID: " << entityManager.getComponentID<TransformComponent>(secondEntity).value
+    std::cout << "First component posX: " << EntityManager::getComponent<TransformComponent>(firstEntity).posX << '\n';
+    std::cout << "First component ID: " << EntityManager::getComponentID<TransformComponent>(firstEntity).value << '\n';
+    std::cout << "Second component posX: " << EntityManager::getComponent<TransformComponent>(secondEntity).posX << '\n';
+    std::cout << "Second component ID: " << EntityManager::getComponentID<TransformComponent>(secondEntity).value
               << '\n';
 }
