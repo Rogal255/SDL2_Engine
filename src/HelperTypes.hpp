@@ -22,8 +22,8 @@ struct EntityID : public GenericID {
 struct ComponentID : public GenericID {
     explicit constexpr ComponentID(const size_t& ID) noexcept : GenericID(ID) { }
     constexpr ComponentID() = default;
-    constexpr ComponentID& operator-=(unsigned short i) noexcept {
-        value -= i;
+    constexpr ComponentID& operator+=(const int i) noexcept {
+        value += i;
         return *this;
     }
 };

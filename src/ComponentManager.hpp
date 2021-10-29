@@ -1,7 +1,7 @@
 #pragma once
 #include "HelperTypes.hpp"
-#include "SDL.h"
 #include <algorithm>
+#include <iterator>
 #include <stdexcept>
 #include <vector>
 
@@ -13,16 +13,28 @@ public:
         return ComponentID(data_.size() - 1);
     }
 
-    // void removeComponent(const size_t index) { data_.erase(data_.begin() + index); }
+    static std::vector<EntityID> removeComponent(const ComponentID& componentID) {
+        if (componentID.value >= data_.size()) {
+            throw std::invalid_argument("ComponentManager::removeComponent() - provided ComponentID out of range");
+        }
+        data_.erase(data_.begin() + componentID.value);
+        std::vector<EntityID> invalidatedEntities;
+        invalidatedEntities.reserve(std::distance(data_.cbegin() + componentID.value, data_.cend()));
+        std::transform(data_.begin() + componentID.value,
+                       data_.end(),
+                       std::back_inserter(invalidatedEntities),
+                       [](const T& component) { return component.entityID; });
+        return invalidatedEntities;
+    }
 
     static T& getComponent(const ComponentID& componentID) {
         if (componentID.value >= data_.size()) {
-            throw std::range_error("ComponentManager::getComponent() - provided ComponentID out of range");
+            throw std::invalid_argument("ComponentManager::getComponent() - provided ComponentID out of range");
         }
         return data_[componentID.value];
     }
 
-    static void clear(){
+    static void clear() {
         data_.clear();
         data_.emplace_back(EntityID(0));
     }
