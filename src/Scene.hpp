@@ -11,12 +11,12 @@ public:
 
     template <typename T>
     T& addComponent(const EntityID& tEntityID) {
-        return entityManager.addComponent(tEntityID, transformComponentManager);
+        return entityManager.addComponent(tEntityID, getComponentManager<T>());
     }
 
     template <typename T>
     void removeComponent(const EntityID& tEntityID) {
-        return entityManager.removeComponent(tEntityID, transformComponentManager);
+        return entityManager.removeComponent(tEntityID, getComponentManager<T>());
     }
 
     template <typename T>
@@ -26,7 +26,7 @@ public:
 
     template <typename T>
     T& getComponent(const EntityID& tEntityID) {
-        return entityManager.getComponent<T>(tEntityID, transformComponentManager);
+        return entityManager.getComponent<T>(tEntityID, getComponentManager<T>());
     }
 
     template <typename T>
@@ -44,7 +44,7 @@ private:
     ComponentManager<TransformComponent> transformComponentManager {ComponentManager<TransformComponent>()};
 
     template <typename T>
-    T& getComponentManager() {
+    ComponentManager<T>& getComponentManager() {
         if (std::is_same<T, TransformComponent>::value) {
             return transformComponentManager;
         }
