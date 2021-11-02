@@ -1,5 +1,5 @@
 #include "Game.hpp"
-#include "HelperTypes.hpp"
+#include "Scene.hpp"
 #include "SDL.h"
 #include <iostream>
 #include <memory>
@@ -95,17 +95,19 @@ void Game::testECS() {
     std::cout << "EntityID: " << sizeof(EntityID) << '\n';
     std::cout << "ComponentID: " << sizeof(ComponentID) << '\n';
     std::cout << "TransformComponent: " << sizeof(TransformComponent) << '\n';
-    EntityID firstEntity = EntityManager::addEntity();
-    EntityID secondEntity = EntityManager::addEntity();
+    Scene scene;
+    EntityID firstEntity = scene.addEntity();
+    EntityID secondEntity = scene.addEntity();
     std::cout << "First entity id: " << firstEntity.value << '\n';
     std::cout << "Second entity id: " << secondEntity.value << '\n';
-    EntityManager::addComponent<TransformComponent>(firstEntity);
-    EntityManager::addComponent<TransformComponent>(secondEntity);
-    auto& firstComponent = EntityManager::getComponent<TransformComponent>(firstEntity);
+    scene.addComponent<TransformComponent>(firstEntity);
+    scene.addComponent<TransformComponent>(secondEntity);
+    auto& firstComponent = scene.getComponent<TransformComponent>(firstEntity);
     firstComponent.posX = 10.f;
-    std::cout << "First component posX: " << EntityManager::getComponent<TransformComponent>(firstEntity).posX << '\n';
-    std::cout << "First component ID: " << EntityManager::getComponentID<TransformComponent>(firstEntity).value << '\n';
-    std::cout << "Second component posX: " << EntityManager::getComponent<TransformComponent>(secondEntity).posX << '\n';
-    std::cout << "Second component ID: " << EntityManager::getComponentID<TransformComponent>(secondEntity).value
+    std::cout << "First component posX: " << scene.getComponent<TransformComponent>(firstEntity).posX << '\n';
+    std::cout << "First component ID: " << scene.getComponentID<TransformComponent>(firstEntity).value << '\n';
+    std::cout << "Second component posX: " << scene.getComponent<TransformComponent>(secondEntity).posX
+              << '\n';
+    std::cout << "Second component ID: " << scene.getComponentID<TransformComponent>(secondEntity).value
               << '\n';
 }

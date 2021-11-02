@@ -8,12 +8,14 @@
 template <class T>
 class ComponentManager {
 public:
-    static ComponentID addComponent(const EntityID& tEntityID) noexcept {
+    ComponentManager() { data_.reserve(10); }
+
+    ComponentID addComponent(const EntityID& tEntityID) noexcept {
         data_.emplace_back(tEntityID);
         return ComponentID(data_.size() - 1);
     }
 
-    static std::vector<EntityID> removeComponent(const ComponentID& componentID) {
+    std::vector<EntityID> removeComponent(const ComponentID& componentID) {
         if (componentID.value >= data_.size()) {
             throw std::invalid_argument("ComponentManager::removeComponent() - provided ComponentID out of range");
         }
@@ -27,18 +29,19 @@ public:
         return invalidatedEntities;
     }
 
-    static T& getComponent(const ComponentID& componentID) {
+    T& getComponent(const ComponentID& componentID) {
         if (componentID.value >= data_.size()) {
-            throw std::invalid_argument("ComponentManager::getComponent() - provided ComponentID out of range");
+            throw std::invalid_argument("ComponentManager::getComponentManager() - provided ComponentID out of range");
         }
         return data_[componentID.value];
     }
 
-    static void clear() {
+    void clear() {
         data_.clear();
         data_.emplace_back(EntityID(0));
     }
 
 private:
-    static inline std::vector<T> data_ {T(EntityID(0))};
+    ComponentEnum typeID {T::typeID};
+    std::vector<T> data_ {T(EntityID(0))};
 };
