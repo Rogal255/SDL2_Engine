@@ -9,7 +9,6 @@
 #include <stdexcept>
 
 class EntityManager {
-public:
     using EntityIterator = std::map<EntityID, Entity>::iterator;
     friend class Scene;
 
