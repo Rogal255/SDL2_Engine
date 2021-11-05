@@ -3,15 +3,19 @@
 #include <algorithm>
 #include <iterator>
 #include <stdexcept>
+#include <utility>
 #include <vector>
+
+class Scene;
 
 template <class T>
 class ComponentManager {
 public:
     ComponentManager() { data_.reserve(10); }
 
-    ComponentID addComponent(const EntityID& tEntityID) noexcept {
-        data_.emplace_back(tEntityID);
+    template <typename... TArgs>
+    ComponentID addComponent(const EntityID& tEntityID, TArgs&&... tArgs) noexcept {
+        data_.emplace_back(tEntityID, std::forward<TArgs>(tArgs)...);
         return ComponentID(data_.size() - 1);
     }
 

@@ -14,6 +14,9 @@ public:
     Game& operator=(const Game&) = delete;
     Game& operator=(Game&&) = delete;
 
+    static std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)> window_;
+    static std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> renderer_;
+
     void mainLoop(); // Performance critical
 
 private:
@@ -21,8 +24,6 @@ private:
     void update();       // Performance critical
     void render();       // Performance critical
 
-    std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)> window_ {nullptr, SDL_DestroyWindow};
-    std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> renderer_ {nullptr, SDL_DestroyRenderer};
     bool isRunning_ {true};
     SDL_Event event_;
 

@@ -5,6 +5,9 @@
 #include <memory>
 #include <stdexcept>
 
+std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)> Game::window_ {nullptr, SDL_DestroyWindow};
+std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> Game::renderer_ {nullptr, SDL_DestroyRenderer};
+
 Game::Game() {
     if (SDL_Init(SDL_INIT_EVERYTHING)) {
         SDL_LogCritical(SDL_LOG_CATEGORY_SYSTEM, "Game::Game() - SDL_Init - %s\n", SDL_GetError());
@@ -38,7 +41,6 @@ Game::Game() {
         SDL_LogCritical(SDL_LOG_CATEGORY_RENDER, "Game::Game() - SDL_SetRenderDrawColor - %s\n", SDL_GetError());
         throw std::runtime_error("Game::Game() - SDL_SetRenderDrawColor has failed");
     }
-
     testECS();
 }
 
@@ -106,8 +108,6 @@ void Game::testECS() {
     firstComponent.posX = 10.f;
     std::cout << "First component posX: " << scene.getComponent<TransformComponent>(firstEntity).posX << '\n';
     std::cout << "First component ID: " << scene.getComponentID<TransformComponent>(firstEntity).value << '\n';
-    std::cout << "Second component posX: " << scene.getComponent<TransformComponent>(secondEntity).posX
-              << '\n';
-    std::cout << "Second component ID: " << scene.getComponentID<TransformComponent>(secondEntity).value
-              << '\n';
+    std::cout << "Second component posX: " << scene.getComponent<TransformComponent>(secondEntity).posX << '\n';
+    std::cout << "Second component ID: " << scene.getComponentID<TransformComponent>(secondEntity).value << '\n';
 }

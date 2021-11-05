@@ -3,11 +3,19 @@
 #include "ComponentManager.hpp"
 #include "EntityManager.hpp"
 #include "HelperTypes.hpp"
+#include "SDL.h"
 #include <type_traits>
 
 class Scene {
 public:
     EntityID addEntity() noexcept { return entityManager.addEntity(); }
+
+    void removeEntity(const EntityID& tEntityID) {
+        if (hasComponent<TransformComponent>(tEntityID)) {
+            removeComponent<TransformComponent>(tEntityID);
+        }
+        entityManager.removeEntity(tEntityID);
+    }
 
     template <typename T>
     T& addComponent(const EntityID& tEntityID) {

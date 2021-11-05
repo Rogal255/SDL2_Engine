@@ -13,4 +13,9 @@ struct TransformComponent : public Component {
     float posY {0.f};
 };
 
-// TODO: Add sprite component
+struct SpriteComponent : public Component {
+    explicit constexpr SpriteComponent(const EntityID& tEntityID) : Component(tEntityID) { }
+    constexpr static ComponentEnum typeID {ComponentEnum::Sprite};
+    float posX {0.f};
+    float posY {0.f};
+};

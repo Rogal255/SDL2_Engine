@@ -7,6 +7,9 @@
 #include <map>
 #include <memory>
 #include <stdexcept>
+#include <utility>
+
+class Scene;
 
 class EntityManager {
     using EntityIterator = std::map<EntityID, Entity>::iterator;
@@ -20,13 +23,18 @@ class EntityManager {
         return entityID;
     }
 
-    template <typename T>
-    T& addComponent(const EntityID& tEntityID, ComponentManager<T>& componentManager) {
+    void removeEntity(const EntityID& tEntityID) {
+        auto it = getEntityIterator(tEntityID);
+        data_.erase(it);
+    }
+
+    template <typename T, typename... TArgs>
+    T& addComponent(const EntityID& tEntityID, ComponentManager<T>& componentManager, TArgs&&... tArgs) {
         auto it = getEntityIterator(tEntityID);
         if (hasComponent<T>(it)) {
             return getComponent<T>(it, componentManager);
         }
-        auto componentID = componentManager.addComponent(tEntityID);
+        auto componentID = componentManager.addComponent(tEntityID, std::forward<TArgs>(tArgs)...);
         it->second.sparseArray[T::typeID] = componentID;
         return componentManager.getComponent(componentID);
     }
