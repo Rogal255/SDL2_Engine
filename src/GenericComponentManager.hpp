@@ -9,13 +9,26 @@ public:
         typeID = componentType;
         switch (typeID) {
         case Transform:
-            data_.transformComponentManager = ComponentManager<TransformComponent>();
+            new (&transformComponentManager) ComponentManager<TransformComponent>;
             break;
         case Sprite:
-            data_.spriteComponentManager = ComponentManager<SpriteComponent>();
+            new (&spriteComponentManager) ComponentManager<SpriteComponent>;
             break;
         default:
             throw std::invalid_argument("GenericComponentManager constructor - bad Component provided");
+        }
+    }
+
+    ~GenericComponentManager() {
+        switch (typeID) {
+        case Transform:
+            transformComponentManager.~ComponentManager<TransformComponent>();
+            break;
+        case Sprite:
+            spriteComponentManager.~ComponentManager<SpriteComponent>();
+            break;
+        default:
+            break;
         }
     }
 
@@ -26,14 +39,21 @@ public:
         return T::typeID == typeID;
     }
 
-    union Components {
-        Components() {};
-        ~Components() {};
+    union {
         ComponentManager<TransformComponent> transformComponentManager;
         ComponentManager<SpriteComponent> spriteComponentManager;
     };
 
-    ComponentManager<TransformComponent>* getManager() { return &data_.transformComponentManager; }
+    template <typename T>
+    ComponentManager<T>* getManager();
 
-    Components data_ {};
+    template <>
+    ComponentManager<TransformComponent>* getManager() {
+        return &transformComponentManager;
+    }
+
+    template <>
+    ComponentManager<SpriteComponent>* getManager() {
+        return &spriteComponentManager;
+    }
 };
