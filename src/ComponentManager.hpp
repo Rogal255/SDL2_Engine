@@ -11,11 +11,11 @@ class Scene;
 template <class T>
 class ComponentManager {
 public:
-    ComponentManager() { data_.reserve(10); }
-     ~ComponentManager() = default;
+    // ComponentManager() { data_.reserve(10); }
+    ComponentManager& operator=(ComponentManager&&) = default;
 
     template <typename... TArgs>
-    ComponentID addComponent(const EntityID& tEntityID, TArgs&&... tArgs) noexcept {
+    ComponentID addComponent(const EntityID& tEntityID, TArgs&&... tArgs) {
         data_.emplace_back(tEntityID, std::forward<TArgs>(tArgs)...);
         return ComponentID(data_.size() - 1);
     }

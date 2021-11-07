@@ -27,7 +27,7 @@ public:
     }
 
     union Components {
-        Components() { memset(this, 0, sizeof(*this)); };
+        Components() {};
         ~Components() {};
         ComponentManager<TransformComponent> transformComponentManager;
         ComponentManager<SpriteComponent> spriteComponentManager;
