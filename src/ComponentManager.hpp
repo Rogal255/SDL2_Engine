@@ -12,6 +12,7 @@ template <class T>
 class ComponentManager {
 public:
     ComponentManager() { data_.reserve(10); }
+     ~ComponentManager() = default;
 
     template <typename... TArgs>
     ComponentID addComponent(const EntityID& tEntityID, TArgs&&... tArgs) noexcept {

@@ -1,9 +1,10 @@
 #include "Component.hpp"
-#include "Scene.hpp"
 #include "ComponentManager.hpp"
 #include "Entity.hpp"
 #include "EntityManager.hpp"
+#include "GenericComponentManager.hpp"
 #include "HelperTypes.hpp"
+#include "Scene.hpp"
 #include <cstdio>
 #include <gtest/gtest.h>
 
