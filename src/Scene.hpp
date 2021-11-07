@@ -4,7 +4,9 @@
 #include "EntityManager.hpp"
 #include "HelperTypes.hpp"
 #include "SDL.h"
+#include <array>
 #include <type_traits>
+#include <variant>
 
 class Scene {
 public:
@@ -19,12 +21,12 @@ public:
 
     template <typename T>
     T& addComponent(const EntityID& tEntityID) {
-        return entityManager.addComponent(tEntityID, getComponentManager<T>());
+        return entityManager.addComponent(tEntityID, std::get<ComponentManager<T>>(getComponentManager<T>()));
     }
 
     template <typename T>
     void removeComponent(const EntityID& tEntityID) {
-        return entityManager.removeComponent(tEntityID, getComponentManager<T>());
+        return entityManager.removeComponent(tEntityID, std::get<ComponentManager<T>>(getComponentManager<T>()));
     }
 
     template <typename T>
@@ -34,7 +36,7 @@ public:
 
     template <typename T>
     T& getComponent(const EntityID& tEntityID) {
-        return entityManager.getComponent<T>(tEntityID, getComponentManager<T>());
+        return entityManager.getComponent<T>(tEntityID, std::get<ComponentManager<T>>(getComponentManager<T>()));
     }
 
     template <typename T>
@@ -44,17 +46,27 @@ public:
 
     void clear() {
         entityManager.clear();
-        transformComponentManager.clear();
+        std::get<ComponentManager<TransformComponent>>(managersArray_[0]).clear();
+        std::get<ComponentManager<SpriteComponent>>(managersArray_[1]).clear();
     }
 
 private:
     EntityManager entityManager {EntityManager()};
-    ComponentManager<TransformComponent> transformComponentManager {ComponentManager<TransformComponent>()};
+
+    using ComponentManagerVariant
+        = std::variant<ComponentManager<TransformComponent>, ComponentManager<SpriteComponent>>;
+
+    std::array<ComponentManagerVariant, ComponentEnum::Size> managersArray_ {
+        ComponentManagerVariant(ComponentManager<TransformComponent>()),
+        ComponentManagerVariant(ComponentManager<SpriteComponent>())};
 
     template <typename T>
-    ComponentManager<T>& getComponentManager() {
-        if (std::is_same<T, TransformComponent>::value) {
-            return transformComponentManager;
+    ComponentManagerVariant& getComponentManager() {
+        for (auto& variant : managersArray_) {
+            if (std::holds_alternative<ComponentManager<T>>(variant)) {
+                return variant;
+            }
         }
+        throw std::invalid_argument("Manager does not exist");
     }
 };
