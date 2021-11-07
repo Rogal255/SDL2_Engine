@@ -11,8 +11,7 @@ class Scene;
 template <class T>
 class ComponentManager {
 public:
-    // ComponentManager() { data_.reserve(10); }
-    ComponentManager& operator=(ComponentManager&&) = default;
+    //ComponentManager() { data_.reserve(10); }
 
     template <typename... TArgs>
     ComponentID addComponent(const EntityID& tEntityID, TArgs&&... tArgs) {

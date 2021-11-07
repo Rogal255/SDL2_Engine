@@ -19,8 +19,8 @@ public:
     }
 
     template <typename T>
-    T& addComponent(const EntityID& tEntityID) {
-        return entityManager.addComponent(tEntityID, getComponentManager<T>());
+    void addComponent(const EntityID& tEntityID) {
+        entityManager.addComponent(tEntityID, getComponentManager<T>());
     }
 
     template <typename T>

@@ -1,8 +1,6 @@
 #include "Component.hpp"
 #include "ComponentManager.hpp"
 #include "Entity.hpp"
-#include "EntityManager.hpp"
-#include "GenericComponentManager.hpp"
 #include "HelperTypes.hpp"
 #include "Scene.hpp"
 #include <cstdio>
@@ -36,7 +34,8 @@ TEST(ECS, ShouldCommunicate) {
     EntityID id;
     for (size_t i {0}; i < COMPONENTS_TO_GENERATE; ++i) {
         id = scene.addEntity();
-        auto& component = scene.addComponent<TransformComponent>(id);
+        scene.addComponent<TransformComponent>(id);
+        auto& component = scene.getComponent<TransformComponent>(id);
         component.posX = 1.f * static_cast<float>(i);
         component.posY = 10.f * static_cast<float>(i);
         ASSERT_EQ(scene.getComponent<TransformComponent>(id).posX, 1.f * static_cast<float>(i));
@@ -51,12 +50,13 @@ TEST(ECS, ShouldNotDuplicateComponents) {
     EntityID id;
     for (size_t i {0}; i < COMPONENTS_TO_GENERATE; ++i) {
         id = scene.addEntity();
-        auto& component = scene.addComponent<TransformComponent>(id);
+        scene.addComponent<TransformComponent>(id);
+        auto& component = scene.getComponent<TransformComponent>(id);
         component.posX = 1.f;
         component.posY = 10.f;
-        component = scene.addComponent<TransformComponent>(id);
-        component = scene.addComponent<TransformComponent>(id);
-        component = scene.addComponent<TransformComponent>(id);
+        scene.addComponent<TransformComponent>(id);
+        scene.addComponent<TransformComponent>(id);
+        scene.addComponent<TransformComponent>(id);
         ASSERT_EQ(scene.getComponentID<TransformComponent>(id), ComponentID(i + 1));
         ASSERT_EQ(scene.getComponent<TransformComponent>(id).posX, 1.f);
         ASSERT_EQ(scene.getComponent<TransformComponent>(id).posY, 10.f);
@@ -70,15 +70,15 @@ TEST(ECS, ShouldRemoveComponent) {
     auto firstEntity {scene.addEntity()};
     auto secondEntity {scene.addEntity()};
     auto thirdEntity {scene.addEntity()};
-    auto& firstComponent = scene.addComponent<TransformComponent>(firstEntity);
-    auto& secondComponent = scene.addComponent<TransformComponent>(secondEntity);
-    auto& thirdComponent = scene.addComponent<TransformComponent>(thirdEntity);
+    scene.addComponent<TransformComponent>(firstEntity);
+    scene.addComponent<TransformComponent>(secondEntity);
+    scene.addComponent<TransformComponent>(thirdEntity);
     ASSERT_TRUE(scene.hasComponent<TransformComponent>(firstEntity));
     ASSERT_TRUE(scene.hasComponent<TransformComponent>(secondEntity));
     ASSERT_TRUE(scene.hasComponent<TransformComponent>(thirdEntity));
-    firstComponent.posX = 1.f;
-    secondComponent.posX = 2.f;
-    thirdComponent.posX = 3.f;
+    scene.getComponent<TransformComponent>(firstEntity).posX = 1.f;
+    scene.getComponent<TransformComponent>(secondEntity).posX = 2.f;
+    scene.getComponent<TransformComponent>(thirdEntity).posX = 3.f;
     ASSERT_EQ(scene.getComponent<TransformComponent>(firstEntity).posX, 1.f);
     ASSERT_EQ(scene.getComponent<TransformComponent>(secondEntity).posX, 2.f);
     ASSERT_EQ(scene.getComponent<TransformComponent>(thirdEntity).posX, 3.f);

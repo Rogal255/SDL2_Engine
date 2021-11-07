@@ -29,14 +29,13 @@ class EntityManager {
     }
 
     template <typename T, typename... TArgs>
-    T& addComponent(const EntityID& tEntityID, ComponentManager<T>& componentManager, TArgs&&... tArgs) {
+    void addComponent(const EntityID& tEntityID, ComponentManager<T>& componentManager, TArgs&&... tArgs) {
         auto it = getEntityIterator(tEntityID);
         if (hasComponent<T>(it)) {
-            return getComponent<T>(it, componentManager);
+            return;
         }
         auto componentID = componentManager.addComponent(tEntityID, std::forward<TArgs>(tArgs)...);
         it->second.sparseArray[T::typeID] = componentID;
-        return componentManager.getComponent(componentID);
     }
 
     template <typename T>

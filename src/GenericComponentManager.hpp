@@ -5,14 +5,14 @@
 
 class GenericComponentManager {
 public:
-    GenericComponentManager(const ComponentEnum& componentType) {
-        typeID = componentType;
-        switch (typeID) {
+    GenericComponentManager(ComponentEnum componentType) {
+        typeID_ = componentType;
+        switch (typeID_) {
         case Transform:
-            new (&transformComponentManager) ComponentManager<TransformComponent>;
+            new (&transformComponentManager_) ComponentManager<TransformComponent>;
             break;
         case Sprite:
-            new (&spriteComponentManager) ComponentManager<SpriteComponent>;
+            new (&spriteComponentManager_) ComponentManager<SpriteComponent>;
             break;
         default:
             throw std::invalid_argument("GenericComponentManager constructor - bad Component provided");
@@ -20,40 +20,41 @@ public:
     }
 
     ~GenericComponentManager() {
-        switch (typeID) {
+        switch (typeID_) {
         case Transform:
-            transformComponentManager.~ComponentManager<TransformComponent>();
+            transformComponentManager_.~ComponentManager<TransformComponent>();
             break;
         case Sprite:
-            spriteComponentManager.~ComponentManager<SpriteComponent>();
+            spriteComponentManager_.~ComponentManager<SpriteComponent>();
             break;
         default:
             break;
         }
     }
 
-    ComponentEnum typeID;
-
     template <typename T>
     bool checkType() const {
-        return T::typeID == typeID;
+        return T::typeID == typeID_;
     }
-
-    union {
-        ComponentManager<TransformComponent> transformComponentManager;
-        ComponentManager<SpriteComponent> spriteComponentManager;
-    };
 
     template <typename T>
     ComponentManager<T>* getManager();
 
     template <>
     ComponentManager<TransformComponent>* getManager() {
-        return &transformComponentManager;
+        return &transformComponentManager_;
     }
 
     template <>
     ComponentManager<SpriteComponent>* getManager() {
-        return &spriteComponentManager;
+        return &spriteComponentManager_;
     }
+
+private:
+    ComponentEnum typeID_;
+
+    union {
+        ComponentManager<TransformComponent> transformComponentManager_;
+        ComponentManager<SpriteComponent> spriteComponentManager_;
+    };
 };
