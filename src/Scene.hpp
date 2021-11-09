@@ -61,7 +61,7 @@ private:
     ComponentManager<T>& getComponentManager() {
         for (auto& manager : managersArray_) {
             if (manager.checkType<T>()) {
-                return *(manager.getManager<T>());
+                return manager.getManager<T>();
             }
         }
         throw std::invalid_argument("Manager does not exist");

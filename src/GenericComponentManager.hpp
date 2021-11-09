@@ -38,16 +38,16 @@ public:
     }
 
     template <typename T>
-    ComponentManager<T>* getManager();
+    ComponentManager<T>& getManager();
 
     template <>
-    ComponentManager<TransformComponent>* getManager() {
-        return &transformComponentManager_;
+    ComponentManager<TransformComponent>& getManager() {
+        return transformComponentManager_;
     }
 
     template <>
-    ComponentManager<SpriteComponent>* getManager() {
-        return &spriteComponentManager_;
+    ComponentManager<SpriteComponent>& getManager() {
+        return spriteComponentManager_;
     }
 
 private:
