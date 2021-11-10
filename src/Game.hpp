@@ -1,7 +1,4 @@
 #pragma once
-#include "Component.hpp"
-#include "ComponentManager.hpp"
-#include "EntityManager.hpp"
 #include "SDL.h"
 #include <memory>
 
@@ -17,12 +14,12 @@ public:
     static std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)> window_;
     static std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> renderer_;
 
-    void mainLoop(); // Performance critical
+    void mainLoop();
 
 private:
-    void handleEvents(); // Performance critical
-    void update();       // Performance critical
-    void render();       // Performance critical
+    void handleEvents();
+    void update();
+    void render();
 
     bool isRunning_ {true};
     SDL_Event event_;

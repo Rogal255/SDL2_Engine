@@ -10,91 +10,38 @@
 #include <utility>
 
 class Scene;
+using EntityIterator = std::map<EntityID, Entity>::iterator;
 
 class EntityManager {
-    using EntityIterator = std::map<EntityID, Entity>::iterator;
     friend class Scene;
 
+    EntityID addEntity();
+    void removeEntity(const EntityID& tEntityID);
+    void clear() noexcept;
+    EntityID generateNextEntityID() noexcept;
+    EntityIterator getEntityIterator(const EntityID& tEntityID);
     std::map<EntityID, Entity> data_;
 
-    EntityID addEntity() noexcept {
-        auto entityID = generateNextEntityID();
-        data_.insert({entityID, Entity(entityID)});
-        return entityID;
-    }
-
-    void removeEntity(const EntityID& tEntityID) {
-        auto it = getEntityIterator(tEntityID);
-        data_.erase(it);
-    }
-
     template <typename T, typename... TArgs>
-    void addComponent(const EntityID& tEntityID, ComponentManager<T>& componentManager, TArgs&&... tArgs) {
-        auto it = getEntityIterator(tEntityID);
-        if (hasComponent<T>(it)) {
-            return;
-        }
-        auto componentID = componentManager.addComponent(tEntityID, std::forward<TArgs>(tArgs)...);
-        it->second.sparseArray[T::typeID] = componentID;
-    }
+    void addComponent(const EntityID& tEntityID, ComponentManager<T>& componentManager, TArgs&&... tArgs);
 
     template <typename T>
-    void removeComponent(const EntityID& tEntityID, ComponentManager<T>& componentManager) {
-        auto it = getEntityIterator(tEntityID);
-        if (!hasComponent<T>(it)) {
-            throw std::invalid_argument("EntityManager::removeComponent - Entity does not have provided Component");
-        }
-        std::vector<EntityID> invalidatedEntities = componentManager.removeComponent(getComponentID<T>(tEntityID));
-        it->second.sparseArray[T::typeID] = ComponentID(0);
-        for (const auto& entityID : invalidatedEntities) {
-            it = getEntityIterator(entityID);
-            it->second.sparseArray[T::typeID] += -1;
-        }
-    }
+    void removeComponent(const EntityID& tEntityID, ComponentManager<T>& componentManager);
 
     template <typename T>
-    bool hasComponent(const EntityID& tEntityID) {
-        auto it = getEntityIterator(tEntityID);
-        return hasComponent<T>(it);
-    }
+    bool hasComponent(const EntityID& tEntityID);
 
     template <typename T>
-    inline bool hasComponent(const EntityIterator& tEntityIterator) {
-        if (tEntityIterator->second.sparseArray[T::typeID]) {
-            return true;
-        }
-        return false;
-    }
+    inline bool hasComponent(const EntityIterator& tEntityIterator);
 
     template <typename T>
-    T& getComponent(const EntityID& tEntityID, ComponentManager<T>& componentManager) {
-        auto it = getEntityIterator(tEntityID);
-        return getComponent<T>(it, componentManager);
-    }
+    T& getComponent(const EntityID& tEntityID, ComponentManager<T>& componentManager);
 
     template <typename T>
-    inline T& getComponent(const EntityIterator& tEntityIterator, ComponentManager<T>& componentManager) {
-        return componentManager.getComponent(tEntityIterator->second.sparseArray[T::typeID]);
-    }
+    inline T& getComponent(const EntityIterator& tEntityIterator, ComponentManager<T>& componentManager);
 
     template <typename T>
-    ComponentID getComponentID(const EntityID& tEntityID) {
-        auto it = getEntityIterator(tEntityID);
-        return ComponentID(it->second.sparseArray[T::typeID]);
-    }
-
-    void clear() noexcept { data_.clear(); }
-
-    inline EntityID generateNextEntityID() noexcept { // NOLINT(readability-convert-member-functions-to-static)
-        static size_t lastAssigned {1u};
-        return EntityID(lastAssigned++);
-    }
-
-    inline EntityIterator getEntityIterator(const EntityID& tEntityID) {
-        auto it = data_.find(tEntityID);
-        if (it == data_.end()) {
-            throw std::invalid_argument("EntityManager::removeComponent - no Entity of given EntityID");
-        }
-        return it;
-    }
+    ComponentID getComponentID(const EntityID& tEntityID);
 };
+
+#include "EntityManager.tpp"

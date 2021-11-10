@@ -9,45 +9,24 @@
 
 class Scene {
 public:
-    EntityID addEntity() noexcept { return entityManager.addEntity(); }
-
-    void removeEntity(const EntityID& tEntityID) {
-        if (hasComponent<TransformComponent>(tEntityID)) {
-            removeComponent<TransformComponent>(tEntityID);
-        }
-        entityManager.removeEntity(tEntityID);
-    }
+    EntityID addEntity() noexcept;
+    void removeEntity(const EntityID& tEntityID);
+    void clear();
 
     template <typename T>
-    void addComponent(const EntityID& tEntityID) {
-        entityManager.addComponent(tEntityID, getComponentManager<T>());
-    }
+    void addComponent(const EntityID& tEntityID);
 
     template <typename T>
-    void removeComponent(const EntityID& tEntityID) {
-        return entityManager.removeComponent(tEntityID, getComponentManager<T>());
-    }
+    void removeComponent(const EntityID& tEntityID);
 
     template <typename T>
-    bool hasComponent(const EntityID& tEntityID) {
-        return entityManager.hasComponent<T>(tEntityID);
-    }
+    bool hasComponent(const EntityID& tEntityID);
 
     template <typename T>
-    T& getComponent(const EntityID& tEntityID) {
-        return entityManager.getComponent<T>(tEntityID, getComponentManager<T>());
-    }
+    T& getComponent(const EntityID& tEntityID);
 
     template <typename T>
-    ComponentID getComponentID(const EntityID& tEntityID) {
-        return entityManager.getComponentID<T>(tEntityID);
-    }
-
-    void clear() {
-        entityManager.clear();
-        getComponentManager<TransformComponent>().clear();
-        getComponentManager<SpriteComponent>().clear();
-    }
+    ComponentID getComponentID(const EntityID& tEntityID);
 
 private:
     EntityManager entityManager {EntityManager()};
@@ -58,12 +37,7 @@ private:
     };
 
     template <typename T>
-    ComponentManager<T>& getComponentManager() {
-        for (auto& manager : managersArray_) {
-            if (manager.checkType<T>()) {
-                return manager.getManager<T>();
-            }
-        }
-        throw std::invalid_argument("Manager does not exist");
-    }
+    ComponentManager<T>& getComponentManager();
 };
+
+#include "Scene.tpp"

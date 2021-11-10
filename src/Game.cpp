@@ -52,7 +52,6 @@ void Game::mainLoop() {
     uint32_t currentFrameStart;
     uint32_t currentFrameTime;
 
-    // Performance critical starts here
     while (isRunning_) {
         currentFrameStart = SDL_GetTicks();
         handleEvents();
@@ -65,7 +64,6 @@ void Game::mainLoop() {
     }
 }
 
-// Performance critical
 void Game::handleEvents() {
     while (SDL_PollEvent(&event_)) {
         switch (event_.type) {
@@ -82,10 +80,8 @@ void Game::handleEvents() {
     }
 }
 
-// Performance critical
 void Game::update() { }
 
-// Performance critical
 void Game::render() {
     SDL_RenderClear(renderer_.get());
     // TODO: render everything

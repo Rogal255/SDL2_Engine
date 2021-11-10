@@ -5,50 +5,18 @@
 
 class GenericComponentManager {
 public:
-    GenericComponentManager(ComponentEnum componentType) {
-        typeID_ = componentType;
-        switch (typeID_) {
-        case Transform:
-            new (&transformComponentManager_) ComponentManager<TransformComponent>;
-            break;
-        case Sprite:
-            new (&spriteComponentManager_) ComponentManager<SpriteComponent>;
-            break;
-        default:
-            throw std::invalid_argument("GenericComponentManager constructor - bad Component provided");
-        }
-    }
-
-    ~GenericComponentManager() {
-        switch (typeID_) {
-        case Transform:
-            transformComponentManager_.~ComponentManager<TransformComponent>();
-            break;
-        case Sprite:
-            spriteComponentManager_.~ComponentManager<SpriteComponent>();
-            break;
-        default:
-            break;
-        }
-    }
+    explicit GenericComponentManager(ComponentEnum componentType);
+    ~GenericComponentManager();
 
     template <typename T>
-    bool checkType() const {
-        return T::typeID == typeID_;
-    }
+    bool checkType() const;
 
     template <typename T>
     ComponentManager<T>& getManager();
-
     template <>
-    ComponentManager<TransformComponent>& getManager() {
-        return transformComponentManager_;
-    }
-
+    ComponentManager<TransformComponent>& getManager();
     template <>
-    ComponentManager<SpriteComponent>& getManager() {
-        return spriteComponentManager_;
-    }
+    ComponentManager<SpriteComponent>& getManager();
 
 private:
     ComponentEnum typeID_;
@@ -58,3 +26,5 @@ private:
         ComponentManager<SpriteComponent> spriteComponentManager_;
     };
 };
+
+#include "GenericComponentManager.tpp"
