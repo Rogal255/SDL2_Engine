@@ -14,9 +14,13 @@ public:
     template <typename T>
     ComponentManager<T>& getManager();
     template <>
-    ComponentManager<TransformComponent>& getManager();
+    ComponentManager<TransformComponent>& getManager() {
+        return transformComponentManager_;
+    }
     template <>
-    ComponentManager<SpriteComponent>& getManager();
+    ComponentManager<SpriteComponent>& getManager() {
+        return spriteComponentManager_;
+    }
 
 private:
     ComponentEnum typeID_;
