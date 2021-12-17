@@ -2,6 +2,7 @@
 #include "Component.hpp"
 #include "ComponentManager.hpp"
 #include <stdexcept>
+#include <type_traits>
 
 class GenericComponentManager {
 public:
@@ -9,17 +10,18 @@ public:
     ~GenericComponentManager();
 
     template <typename T>
-    bool checkType() const;
+    bool checkType() const {
+        return T::typeID == typeID_;
+    }
 
     template <typename T>
-    ComponentManager<T>& getManager();
-    template <>
-    ComponentManager<TransformComponent>& getManager() {
-        return transformComponentManager_;
-    }
-    template <>
-    ComponentManager<SpriteComponent>& getManager() {
-        return spriteComponentManager_;
+    ComponentManager<T>& getManager() {
+        if constexpr (std::is_same<T, TransformComponent>::value) {
+            return transformComponentManager_;
+        }
+        if constexpr (std::is_same<T, SpriteComponent>::value) {
+            return spriteComponentManager_;
+        }
     }
 
 private:
@@ -30,5 +32,3 @@ private:
         ComponentManager<SpriteComponent> spriteComponentManager_;
     };
 };
-
-#include "GenericComponentManager.tpp"
