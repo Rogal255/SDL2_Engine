@@ -32,10 +32,7 @@ bool EntityManager::hasComponent(const EntityID& tEntityID) {
 
 template <typename T>
 inline bool EntityManager::hasComponent(const EntityIterator& tEntityIterator) {
-    if (tEntityIterator->second.sparseArray[T::typeID]) {
-        return true;
-    }
-    return false;
+    return static_cast<bool>(tEntityIterator->second.sparseArray[T::typeID]);
 }
 
 template <typename T>
