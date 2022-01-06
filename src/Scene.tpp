@@ -25,10 +25,10 @@ ComponentID Scene::getComponentID(const EntityID& tEntityID) {
 }
 
 template <typename T>
-ComponentManager<T>& Scene::getComponentManager() {
-    for (auto& manager : managersArray_) {
-        if (manager.checkType<T>()) {
-            return manager.getManager<T>();
+constexpr ComponentManager<T>& Scene::getComponentManager() {
+    for (auto& managerVariant : managersArray_) {
+        if (auto ptr = std::get_if<ComponentManager<T>>(&managerVariant)) {
+            return *ptr;
         }
     }
     throw std::invalid_argument("Manager does not exist");

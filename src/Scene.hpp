@@ -2,10 +2,12 @@
 #include "Component.hpp"
 #include "ComponentManager.hpp"
 #include "EntityManager.hpp"
-#include "GenericComponentManager.hpp"
 #include "HelperTypes.hpp"
 #include "SDL.h"
 #include <array>
+#include <variant>
+
+using ComponentManagerVariant = std::variant<ComponentManager<TransformComponent>, ComponentManager<SpriteComponent>>;
 
 class Scene {
 public:
@@ -31,13 +33,13 @@ public:
 private:
     EntityManager entityManager {EntityManager()};
 
-    std::array<GenericComponentManager, ComponentEnum::Size> managersArray_ {
-        GenericComponentManager(ComponentEnum::Transform),
-        GenericComponentManager(ComponentEnum::Sprite),
+    std::array<ComponentManagerVariant, ComponentEnum::Size> managersArray_ {
+        ComponentManager<TransformComponent>(),
+        ComponentManager<SpriteComponent>(),
     };
 
     template <typename T>
-    ComponentManager<T>& getComponentManager();
+    constexpr ComponentManager<T>& getComponentManager();
 };
 
 #include "Scene.tpp"

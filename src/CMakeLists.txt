@@ -2,7 +2,6 @@ set(SRC_LIST
         main.cpp
         TextureManager.cpp
         EntityManager.cpp
-        GenericComponentManager.cpp
         Scene.cpp
         Game.cpp)
 
