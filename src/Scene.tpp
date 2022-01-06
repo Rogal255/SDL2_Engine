@@ -25,7 +25,7 @@ ComponentID Scene::getComponentID(const EntityID& tEntityID) {
 }
 
 template <typename T>
-constexpr ComponentManager<T>& Scene::getComponentManager() {
+ComponentManager<T>& Scene::getComponentManager() {
     for (auto& managerVariant : managersArray_) {
         if (auto ptr = std::get_if<ComponentManager<T>>(&managerVariant)) {
             return *ptr;

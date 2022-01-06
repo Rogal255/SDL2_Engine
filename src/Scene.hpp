@@ -39,7 +39,7 @@ private:
     };
 
     template <typename T>
-    constexpr ComponentManager<T>& getComponentManager();
+    ComponentManager<T>& getComponentManager();
 };
 
 #include "Scene.tpp"
