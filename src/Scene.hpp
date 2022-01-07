@@ -1,61 +1,39 @@
 #pragma once
-#include "Component.hpp"
-#include "ComponentManager.hpp"
-#include "EntityManager.hpp"
+#include "ContentManager.hpp"
 #include "HelperTypes.hpp"
-#include "SDL.h"
-#include <array>
-#include <variant>
+#include <utility>
 
 class Scene {
-    using ComponentManagerVariant
-        = std::variant<ComponentManager<TransformComponent>, ComponentManager<SpriteComponent>>;
-
 public:
     EntityID addEntity() noexcept;
     void removeEntity(const EntityID& tEntityID);
     void clear();
 
-    template <typename T>
-    void addComponent(const EntityID& tEntityID) {
-        entityManager.addComponent(tEntityID, getComponentManager<T>());
+    template <typename T, typename... TArgs>
+    void addComponent(const EntityID& tEntityID, TArgs&&... tArgs) {
+        manager_.addComponent<T>(tEntityID, std::forward<TArgs>(tArgs)...);
     }
 
     template <typename T>
     void removeComponent(const EntityID& tEntityID) {
-        return entityManager.removeComponent(tEntityID, getComponentManager<T>());
+        return manager_.removeComponent<T>(tEntityID);
     }
 
     template <typename T>
     bool hasComponent(const EntityID& tEntityID) {
-        return entityManager.hasComponent<T>(tEntityID);
+        return manager_.hasComponent<T>(tEntityID);
     }
 
     template <typename T>
     T& getComponent(const EntityID& tEntityID) {
-        return entityManager.getComponent<T>(tEntityID, getComponentManager<T>());
+        return manager_.getComponent<T>(tEntityID);
     }
 
     template <typename T>
     ComponentID getComponentID(const EntityID& tEntityID) {
-        return entityManager.getComponentID<T>(tEntityID);
+        return manager_.getComponentID<T>(tEntityID);
     }
 
 private:
-    EntityManager entityManager {EntityManager()};
-
-    std::array<ComponentManagerVariant, ComponentEnum::Size> managersArray_ {
-        ComponentManager<TransformComponent>(),
-        ComponentManager<SpriteComponent>(),
-    };
-
-    template <typename T>
-    ComponentManager<T>& getComponentManager() {
-        for (auto& managerVariant : managersArray_) {
-            if (auto ptr = std::get_if<ComponentManager<T>>(&managerVariant)) {
-                return *ptr;
-            }
-        }
-        throw std::invalid_argument("Manager does not exist");
-    }
+    ContentManager manager_;
 };

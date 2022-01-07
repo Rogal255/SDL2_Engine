@@ -8,37 +8,38 @@
 #include <memory>
 #include <stdexcept>
 #include <utility>
+#include <variant>
 
-class Scene;
-using EntityIterator = std::map<EntityID, Entity>::iterator;
+class ContentManager {
+    using EntityIterator = std::map<EntityID, Entity>::iterator;
+    using ComponentManagerVariant
+        = std::variant<ComponentManager<TransformComponent>, ComponentManager<SpriteComponent>>;
 
-class EntityManager {
-    friend class Scene;
-
+public:
     EntityID addEntity();
     void removeEntity(const EntityID& tEntityID);
     void clear() noexcept;
     EntityID generateNextEntityID() noexcept;
     EntityIterator getEntityIterator(const EntityID& tEntityID);
-    std::map<EntityID, Entity> data_;
 
     template <typename T, typename... TArgs>
-    void addComponent(const EntityID& tEntityID, ComponentManager<T>& componentManager, TArgs&&... tArgs) {
+    void addComponent(const EntityID& tEntityID, TArgs&&... tArgs) {
         auto it = getEntityIterator(tEntityID);
         if (hasComponent<T>(it)) {
             return;
         }
-        auto componentID = componentManager.addComponent(tEntityID, std::forward<TArgs>(tArgs)...);
+        auto componentID = getComponentManager<T>().addComponent(tEntityID, std::forward<TArgs>(tArgs)...);
         it->second.sparseArray[T::typeID] = componentID;
     }
 
     template <typename T>
-    void removeComponent(const EntityID& tEntityID, ComponentManager<T>& componentManager) {
+    void removeComponent(const EntityID& tEntityID) {
         auto it = getEntityIterator(tEntityID);
         if (!hasComponent<T>(it)) {
-            throw std::invalid_argument("EntityManager::removeComponent - Entity does not have provided Component");
+            throw std::invalid_argument("ContentManager::removeComponent - Entity does not have provided Component");
         }
-        std::vector<EntityID> invalidatedEntities = componentManager.removeComponent(getComponentID<T>(tEntityID));
+        std::vector<EntityID> invalidatedEntities
+            = getComponentManager<T>().removeComponent(getComponentID<T>(tEntityID));
         it->second.sparseArray[T::typeID] = ComponentID(0);
         for (const auto& entityID : invalidatedEntities) {
             it = getEntityIterator(entityID);
@@ -58,14 +59,14 @@ class EntityManager {
     }
 
     template <typename T>
-    T& getComponent(const EntityID& tEntityID, ComponentManager<T>& componentManager) {
+    T& getComponent(const EntityID& tEntityID) {
         auto it = getEntityIterator(tEntityID);
-        return getComponent<T>(it, componentManager);
+        return getComponent<T>(it);
     }
 
     template <typename T>
-    inline T& getComponent(const EntityIterator& tEntityIterator, ComponentManager<T>& componentManager) {
-        return componentManager.getComponent(tEntityIterator->second.sparseArray[T::typeID]);
+    inline T& getComponent(const EntityIterator& tEntityIterator) {
+        return getComponentManager<T>().getComponent(tEntityIterator->second.sparseArray[T::typeID]);
     }
 
     template <typename T>
@@ -73,4 +74,22 @@ class EntityManager {
         auto it = getEntityIterator(tEntityID);
         return ComponentID(it->second.sparseArray[T::typeID]);
     }
+
+private:
+    template <typename T>
+    ComponentManager<T>& getComponentManager() {
+        for (auto& managerVariant : managersArray_) {
+            if (auto ptr = std::get_if<ComponentManager<T>>(&managerVariant)) {
+                return *ptr;
+            }
+        }
+        throw std::invalid_argument("Manager does not exist");
+    }
+
+    std::map<EntityID, Entity> entities_;
+
+    std::array<ComponentManagerVariant, ComponentEnum::Size> managersArray_ {
+        ComponentManager<TransformComponent>(),
+        ComponentManager<SpriteComponent>(),
+    };
 };

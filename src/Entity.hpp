@@ -3,10 +3,10 @@
 #include "HelperTypes.hpp"
 #include <array>
 
-class EntityManager;
+class ContentManager;
 
 class Entity {
-    friend EntityManager;
+    friend ContentManager;
 
 public:
     EntityID entityID;

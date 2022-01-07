@@ -1,7 +1,7 @@
 set(SRC_LIST
         main.cpp
         TextureManager.cpp
-        EntityManager.cpp
+        ContentManager.cpp
         Scene.cpp
         Game.cpp)
 

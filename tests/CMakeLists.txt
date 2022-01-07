@@ -10,7 +10,7 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 add_executable(General_ECS_ut-${CMAKE_BUILD_TYPE} ECS.cpp
-        ../src/EntityManager.cpp
+        ../src/ContentManager.cpp
         ../src/Scene.cpp)
 
 target_link_libraries(General_ECS_ut-${CMAKE_BUILD_TYPE} gtest_main)
