@@ -13,6 +13,12 @@ class ComponentManager {
 public:
     ComponentManager() { data_.reserve(10); }
 
+    template <typename... TArgs>
+    ComponentID addComponent(const EntityID& tEntityID, TArgs&&... tArgs) {
+        data_.emplace_back(tEntityID, std::forward<TArgs>(tArgs)...);
+        return ComponentID(data_.size() - 1);
+    }
+
     std::vector<EntityID> removeComponent(const ComponentID& componentID) {
         if (componentID.value >= data_.size()) {
             throw std::invalid_argument("ComponentManager::removeComponent() - provided ComponentID out of range");
@@ -37,12 +43,6 @@ public:
     void clear() {
         data_.clear();
         data_.emplace_back(EntityID(0));
-    }
-
-    template <typename... TArgs>
-    ComponentID addComponent(const EntityID& tEntityID, TArgs&&... tArgs) {
-        data_.emplace_back(tEntityID, std::forward<TArgs>(tArgs)...);
-        return ComponentID(data_.size() - 1);
     }
 
 private:

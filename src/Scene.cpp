@@ -6,6 +6,9 @@ void Scene::removeEntity(const EntityID& tEntityID) {
     if (hasComponent<TransformComponent>(tEntityID)) {
         removeComponent<TransformComponent>(tEntityID);
     }
+    if (hasComponent<SpriteComponent>(tEntityID)) {
+        removeComponent<SpriteComponent>(tEntityID);
+    }
     entityManager.removeEntity(tEntityID);
 }
 
