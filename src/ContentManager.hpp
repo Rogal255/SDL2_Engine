@@ -78,7 +78,7 @@ public:
 private:
     template <typename T>
     ComponentManager<T>& getComponentManager() {
-        for (auto& managerVariant : managersArray_) {
+        for (auto& managerVariant : componentManagers_) {
             if (auto ptr = std::get_if<ComponentManager<T>>(&managerVariant)) {
                 return *ptr;
             }
@@ -88,7 +88,7 @@ private:
 
     std::map<EntityID, Entity> entities_;
 
-    std::array<ComponentManagerVariant, ComponentEnum::Size> managersArray_ {
+    std::array<ComponentManagerVariant, ComponentEnum::Size> componentManagers_ {
         ComponentManager<TransformComponent>(),
         ComponentManager<SpriteComponent>(),
     };
