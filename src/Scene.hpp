@@ -3,8 +3,11 @@
 #include "HelperTypes.hpp"
 #include <utility>
 
+class GameObservers;
+
 class Scene {
 public:
+    Scene(GameObservers* gameObservers);
     EntityID addEntity() noexcept;
     void removeEntity(const EntityID& tEntityID);
     void clear();

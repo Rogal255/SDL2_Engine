@@ -41,7 +41,6 @@ Game::Game() {
         SDL_LogCritical(SDL_LOG_CATEGORY_RENDER, "Game::Game() - SDL_SetRenderDrawColor - %s\n", SDL_GetError());
         throw std::runtime_error("Game::Game() - SDL_SetRenderDrawColor has failed");
     }
-    testECS();
 }
 
 Game::~Game() { SDL_Quit(); }
@@ -49,13 +48,13 @@ Game::~Game() { SDL_Quit(); }
 void Game::mainLoop() {
     const uint16_t FPS {60};
     const uint16_t maxFrameTime {1000 / FPS};
-    uint32_t currentFrameStart;
-    uint32_t currentFrameTime;
+    uint32_t currentFrameStart {0};
+    uint32_t currentFrameTime {0};
 
     while (isRunning_) {
         currentFrameStart = SDL_GetTicks();
         handleEvents();
-        update();
+        update(maxFrameTime);
         render();
         currentFrameTime = SDL_GetTicks() - currentFrameStart;
         if (maxFrameTime > currentFrameTime) {
@@ -80,30 +79,8 @@ void Game::handleEvents() {
     }
 }
 
-void Game::update() { }
-
 void Game::render() {
     SDL_RenderClear(renderer_.get());
     // TODO: render everything
     SDL_RenderPresent(renderer_.get());
-}
-
-void Game::testECS() {
-    std::cout << "Entity: " << sizeof(Entity) << '\n';
-    std::cout << "EntityID: " << sizeof(EntityID) << '\n';
-    std::cout << "ComponentID: " << sizeof(ComponentID) << '\n';
-    std::cout << "TransformComponent: " << sizeof(TransformComponent) << '\n';
-    Scene scene;
-    EntityID firstEntity = scene.addEntity();
-    EntityID secondEntity = scene.addEntity();
-    std::cout << "First entity id: " << firstEntity.value << '\n';
-    std::cout << "Second entity id: " << secondEntity.value << '\n';
-    scene.addComponent<TransformComponent>(firstEntity);
-    scene.addComponent<TransformComponent>(secondEntity);
-    auto& firstComponent = scene.getComponent<TransformComponent>(firstEntity);
-    firstComponent.posX = 10.f;
-    std::cout << "First component posX: " << scene.getComponent<TransformComponent>(firstEntity).posX << '\n';
-    std::cout << "First component ID: " << scene.getComponentID<TransformComponent>(firstEntity).value << '\n';
-    std::cout << "Second component posX: " << scene.getComponent<TransformComponent>(secondEntity).posX << '\n';
-    std::cout << "Second component ID: " << scene.getComponentID<TransformComponent>(secondEntity).value << '\n';
 }

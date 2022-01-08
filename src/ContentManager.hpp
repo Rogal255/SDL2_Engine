@@ -10,12 +10,15 @@
 #include <utility>
 #include <variant>
 
+class GameObservers;
+
 class ContentManager {
     using EntityIterator = std::map<EntityID, Entity>::iterator;
     using ComponentManagerVariant
         = std::variant<ComponentManager<TransformComponent>, ComponentManager<SpriteComponent>>;
 
 public:
+    void setUpdateManager(GameObservers* ptr);
     EntityID addEntity();
     void removeEntity(const EntityID& tEntityID);
     void clear() noexcept;
@@ -92,4 +95,6 @@ private:
         ComponentManager<TransformComponent>(),
         ComponentManager<SpriteComponent>(),
     };
+
+    GameObservers* gameObservers_ {nullptr};
 };

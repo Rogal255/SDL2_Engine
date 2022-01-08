@@ -1,8 +1,11 @@
 #pragma once
 #include "SDL.h"
+#include "Updatable.hpp"
+#include "GameObservers.hpp"
 #include <memory>
+#include <vector>
 
-class Game {
+class Game : public GameObservers {
 public:
     Game();
     ~Game();
@@ -18,7 +21,6 @@ public:
 
 private:
     void handleEvents();
-    void update();
     void render();
 
     bool isRunning_ {true};
@@ -28,6 +30,4 @@ private:
     const bool windowFullScreen_ {false};
     const int resolutionWidth_ {800};
     const int resolutionHeight_ {600};
-
-    void testECS();
 };

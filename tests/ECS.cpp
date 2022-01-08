@@ -1,13 +1,14 @@
 #include "Component.hpp"
 #include "ComponentManager.hpp"
-#include "Entity.hpp"
+#include "GameObservers.hpp"
 #include "HelperTypes.hpp"
 #include "Scene.hpp"
 #include <cstdio>
 #include <gtest/gtest.h>
 
 TEST(ECS, ShouldGenerateEntities) {
-    Scene scene;
+    GameObservers updateManager;
+    Scene scene(&updateManager);
     constexpr size_t ENTITIES_TO_GENERATE {100};
     for (size_t i {0}; i < ENTITIES_TO_GENERATE; ++i) {
         ASSERT_EQ(scene.addEntity(), EntityID(i + 1));
@@ -16,7 +17,8 @@ TEST(ECS, ShouldGenerateEntities) {
 }
 
 TEST(ECS, ShouldGenerateComponents) {
-    Scene scene;
+    GameObservers updateManager;
+    Scene scene(&updateManager);
     ASSERT_THROW(scene.addComponent<TransformComponent>(EntityID(1)), std::invalid_argument);
     constexpr size_t COMPONENTS_TO_GENERATE {100};
     EntityID id;
@@ -29,7 +31,8 @@ TEST(ECS, ShouldGenerateComponents) {
 }
 
 TEST(ECS, ShouldCommunicate) {
-    Scene scene;
+    GameObservers updateManager;
+    Scene scene(&updateManager);
     constexpr size_t COMPONENTS_TO_GENERATE {1000};
     EntityID id;
     for (size_t i {0}; i < COMPONENTS_TO_GENERATE; ++i) {
@@ -45,7 +48,8 @@ TEST(ECS, ShouldCommunicate) {
 }
 
 TEST(ECS, ShouldNotDuplicateComponents) {
-    Scene scene;
+    GameObservers updateManager;
+    Scene scene(&updateManager);
     constexpr size_t COMPONENTS_TO_GENERATE {100};
     EntityID id;
     for (size_t i {0}; i < COMPONENTS_TO_GENERATE; ++i) {
@@ -65,7 +69,8 @@ TEST(ECS, ShouldNotDuplicateComponents) {
 }
 
 TEST(ECS, ShouldRemoveComponent) {
-    Scene scene;
+    GameObservers updateManager;
+    Scene scene(&updateManager);
     ASSERT_THROW(scene.removeComponent<TransformComponent>(EntityID(1)), std::invalid_argument);
     auto firstEntity {scene.addEntity()};
     auto secondEntity {scene.addEntity()};

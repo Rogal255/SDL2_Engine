@@ -1,5 +1,7 @@
 #include "ContentManager.hpp"
 
+void ContentManager::setUpdateManager(GameObservers* ptr) { gameObservers_ = ptr; }
+
 EntityID ContentManager::addEntity() {
     auto entityID = generateNextEntityID();
     entities_.insert({entityID, Entity(entityID)});
